@@ -10,6 +10,26 @@
     "url": "/about"
   },
   {
+    "pageKey": "Admin",
+    "title": "管理后台",
+    "url": "/admin"
+  },
+  {
+    "pageKey": "m0zdgx",
+    "title": "/admin/articles",
+    "url": "/admin/articles"
+  },
+  {
+    "pageKey": "cggfte",
+    "title": "/admin/images",
+    "url": "/admin/images"
+  },
+  {
+    "pageKey": "j298pz",
+    "title": "/admin/settings",
+    "url": "/admin/settings"
+  },
+  {
     "pageKey": "Contact",
     "title": "联系我们",
     "url": "/contact"
