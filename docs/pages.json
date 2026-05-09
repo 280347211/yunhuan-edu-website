@@ -1,0 +1,22 @@
+[
+  {
+    "pageKey": "Home",
+    "title": "首页",
+    "url": "/"
+  },
+  {
+    "pageKey": "About",
+    "title": "关于我们",
+    "url": "/about"
+  },
+  {
+    "pageKey": "Contact",
+    "title": "联系我们",
+    "url": "/contact"
+  },
+  {
+    "pageKey": "Products",
+    "title": "产品服务",
+    "url": "/products"
+  }
+]

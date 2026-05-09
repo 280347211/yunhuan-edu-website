@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "project_name": "云幻教育科技股份有限公司官网",
+    "source_mode": "requirements",
+    "style": "corporate-education-tech"
+  },
+  "colors": {
+    "primary": "#1a56db",
+    "primary_light": "#3b82f6",
+    "primary_dark": "#1e3a8a",
+    "secondary": "#0f172a",
+    "accent": "#f59e0b",
+    "background": "#ffffff",
+    "surface": "#f8fafc",
+    "surface_alt": "#f1f5f9",
+    "text_primary": "#0f172a",
+    "text_secondary": "#475569",
+    "text_muted": "#94a3b8",
+    "border": "#e2e8f0",
+    "white": "#ffffff"
+  },
+  "typography": {
+    "font_primary": "\"Inter\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "font_display": "\"Inter\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+    "sizes": {
+      "hero": "3.5rem",
+      "h1": "2.5rem",
+      "h2": "2rem",
+      "h3": "1.5rem",
+      "h4": "1.25rem",
+      "body": "1rem",
+      "small": "0.875rem"
+    }
+  },
+  "spacing": {
+    "unit": 4,
+    "scale": [4, 8, 16, 24, 32, 48, 64, 80, 96, 128]
+  },
+  "border_radius": {
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px"
+  },
+  "gradients": {
+    "hero": "linear-gradient(135deg, #1e3a8a 0%, #1a56db 50%, #3b82f6 100%)",
+    "hero_overlay": "linear-gradient(180deg, rgba(15,23,42,0.6) 0%, rgba(26,86,219,0.3) 100%)",
+    "card_hover": "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+    "section_alt": "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)",
+    "accent_bar": "linear-gradient(90deg, #1a56db 0%, #3b82f6 100%)"
+  },
+  "shadows": {
+    "card": "0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04)",
+    "card_hover": "0 8px 24px rgba(26,86,219,0.12), 0 4px 8px rgba(0,0,0,0.06)",
+    "nav": "0 1px 3px rgba(0,0,0,0.06)",
+    "nav_scroll": "0 4px 16px rgba(0,0,0,0.08)"
+  },
+  "transitions": {
+    "default": "all 0.3s ease",
+    "fast": "all 0.15s ease",
+    "slow": "all 0.5s ease"
+  }
+}

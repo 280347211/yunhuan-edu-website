@@ -1,0 +1,4 @@
+[2026-05-09 07:04:18] [INFO] ==== setup-project.js =====
+[2026-05-09 07:04:18] [DEBUG] [PPT Setup] stdin 数据: {"session_id":"2053007833335468032","transcript_path":"/root/.codebuddy/projects/workspace/2053007833335468032.jsonl","cwd":"/workspace","hook_event_name":"PreToolUse","tool_name":"Skill","tool_input":{"args":"企业官网 - 云幻教育科技股份有限公司 - 教育行业简约大气风格，蓝白配色，中英双语标题，参考 magicloudedu.com","skill":"prototype-implement"},"call_id":"call_34909531e0fe4bad85b0c1d1","tool_use_id":"call_34909531e0fe4bad85b0c1d1","permission_mode":"dontAsk","client":"CLI","version":"2.94.0","generation_id":"8032427844ff4c1aa5d8616b3ab167cb","model":"glm-5.1"}
+[2026-05-09 07:04:18] [INFO] [PPT Setup] skill: prototype-implement
+[2026-05-09 07:04:18] [INFO] [PPT Setup] 跳过: skill 是 "prototype-implement"，不是 "ppt-implement"
