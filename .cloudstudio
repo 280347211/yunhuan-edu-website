@@ -3,3 +3,9 @@ name = "frontend"
 cmd = "cd frontend && pnpm install && pnpm dev"
 autoRun = true
 port = 5173
+
+[[app]]
+name = "backend"
+cmd = "cd backend && pnpm install && pnpm exec tsx src/index.ts"
+autoRun = true
+port = 3000

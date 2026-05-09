@@ -16,23 +16,11 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-/* ── Hero Slides ── */
-const heroSlides = [
-  {
-    title: "科技赋能教育",
-    subtitle: "3D/AR/VR教育产品领航者",
-    desc: "以创新技术重塑教学体验，让抽象知识触手可及",
-  },
-  {
-    title: "虚拟仿真实验",
-    subtitle: "沉浸式学习新范式",
-    desc: "覆盖物理、化学、生物全学科实验场景",
-  },
-  {
-    title: "智慧校园方案",
-    subtitle: "一站式教育信息化",
-    desc: "从实验室建设到教学资源，全方位赋能学校",
-  },
+/* ── Hero Slides (fallback, can be overridden by site config) ── */
+const defaultHeroSlides = [
+  { title: "科技赋能教育", subtitle: "3D/AR/VR教育产品领航者", desc: "以创新技术重塑教学体验，让抽象知识触手可及" },
+  { title: "虚拟仿真实验", subtitle: "沉浸式学习新范式", desc: "覆盖物理、化学、生物全学科实验场景" },
+  { title: "智慧校园方案", subtitle: "一站式教育信息化", desc: "从实验室建设到教学资源，全方位赋能学校" },
 ];
 
 /* ── Products Data ── */
@@ -81,16 +69,41 @@ const cases = [
   { title: "东北师范大学附属中学", region: "东北", desc: "智慧校园一体化方案" },
 ];
 
-/* ── News ── */
-const news = [
-  { date: "2024-12-15", title: "云幻教育荣获2024年度教育科技创新奖" },
-  { date: "2024-11-28", title: "虚拟仿真实验平台3.0版本正式发布" },
-  { date: "2024-11-10", title: "云幻教育与教育部签署战略合作协议" },
-  { date: "2024-10-22", title: "3D物理实验资源库全面覆盖新课标" },
-];
+/* ── News (loaded from API) ── */
+interface NewsItem {
+  id: number;
+  title: string;
+  createdAt: string;
+}
 
 export default function Index() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [heroSlides, setHeroSlides] = useState(defaultHeroSlides);
+
+  // Load news from API
+  useEffect(() => {
+    fetch("/api/articles?category=news&published=true")
+      .then((r) => r.json())
+      .then((data) => setNews(data.slice(0, 4)))
+      .catch(() => {});
+  }, []);
+
+  // Load hero slides from site config
+  useEffect(() => {
+    fetch("/api/site-config")
+      .then((r) => r.json())
+      .then((cfg) => {
+        if (cfg.hero_title_1) {
+          setHeroSlides([
+            { title: cfg.hero_title_1, subtitle: cfg.hero_subtitle_1 || "", desc: cfg.hero_desc_1 || "" },
+            { title: cfg.hero_title_2, subtitle: cfg.hero_subtitle_2 || "", desc: cfg.hero_desc_2 || "" },
+            { title: cfg.hero_title_3, subtitle: cfg.hero_subtitle_3 || "", desc: cfg.hero_desc_3 || "" },
+          ]);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -270,7 +283,7 @@ export default function Index() {
             <FadeIn delay={0.2}>
               <div className="relative">
                 <img
-                  src="https://picsum.photos/640/480?random=9874"
+                  src="/images/about-office.svg"
                   alt="云幻教育科技公司展厅，展示3D虚拟实验设备和智慧教育解决方案"
                   className="rounded-xl shadow-lg w-full object-cover"
                   style={{ aspectRatio: "4/3" }}
@@ -333,13 +346,13 @@ export default function Index() {
           </FadeIn>
 
           <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {news.map((n, idx) => (
-              <motion.div key={idx} variants={fadeUp}>
+            {news.map((n) => (
+              <motion.div key={n.id} variants={fadeUp}>
                 <HoverLift>
                   <div className="flex gap-5 p-5 bg-white rounded-xl border border-[#e2e8f0] hover:border-[#3b82f6]/30 transition-all duration-300 cursor-pointer">
                     <div className="flex flex-col items-center justify-center w-16 shrink-0 rounded-lg" style={{ background: "#eff6ff" }}>
-                      <span className="text-[#1a56db] font-bold text-lg">{n.date.split("-")[2]}</span>
-                      <span className="text-[#475569] text-xs">{n.date.split("-").slice(0, 2).join("/")}</span>
+                      <span className="text-[#1a56db] font-bold text-lg">{n.createdAt?.split("-")[2]?.slice(0,2) || ""}</span>
+                      <span className="text-[#475569] text-xs">{n.createdAt ? n.createdAt.split("-").slice(0,2).join("/") : ""}</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium text-[#0f172a] text-sm leading-relaxed line-clamp-2">

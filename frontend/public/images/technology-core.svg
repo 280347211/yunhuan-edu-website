@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
+  <rect width="640" height="480" fill="#0f172a"/>
+  <text x="320" y="220" text-anchor="middle" fill="#3b82f6" font-size="28" font-family="sans-serif">核心技术架构</text>
+  <text x="320" y="270" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="16" font-family="sans-serif">3D引擎 + AI评分系统</text>
+</svg>

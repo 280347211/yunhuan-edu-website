@@ -108,7 +108,7 @@ export default function About() {
 
             <FadeIn delay={0.2}>
               <img
-                src="https://picsum.photos/640/480?random=8443"
+                src="/images/about-team.svg"
                 alt="云幻教育科技公司现代化的办公环境和研发团队工作场景"
                 className="rounded-xl shadow-lg w-full object-cover"
                 style={{ aspectRatio: "4/3" }}

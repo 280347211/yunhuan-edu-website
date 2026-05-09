@@ -160,7 +160,7 @@ export default function Products() {
               </div>
               <div>
                 <img
-                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee198?w=640&h=420&fit=crop"
+                  src="/images/product-lab.svg"
                   alt={`${activeProduct.title}产品界面展示，包含3D虚拟实验和交互式教学功能`}
                   className="rounded-xl shadow-lg w-full object-cover"
                   style={{ aspectRatio: "16/10" }}
@@ -235,7 +235,7 @@ export default function Products() {
 
             <FadeIn delay={0.2}>
               <img
-                src="https://picsum.photos/640/480?random=4515"
+                src="/images/technology-core.svg"
                 alt="云幻教育核心技术架构展示，包含3D渲染引擎和AI智能评分系统"
                 className="rounded-xl shadow-lg w-full object-cover"
                 style={{ aspectRatio: "4/3" }}
