@@ -1,0 +1,20 @@
+# 云幻教育官网 - Robots.txt
+User-agent: *
+Allow: /
+
+# 站点地图
+Sitemap: https://www.magicloudedu.com/sitemap.xml
+
+# 不允许爬取的路径（管理后台）
+Disallow: /admin/
+Disallow: /api/
+
+# 百度蜘蛛特别说明
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1

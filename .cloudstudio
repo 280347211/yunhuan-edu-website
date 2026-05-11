@@ -1,6 +1,6 @@
 [[app]]
 name = "frontend"
-cmd = "cd frontend && pnpm install && pnpm dev"
+cmd = "cd frontend && pnpm install && pnpm next dev --port 5173"
 autoRun = true
 port = 5173
 
