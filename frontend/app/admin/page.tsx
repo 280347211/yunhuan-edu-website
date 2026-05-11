@@ -1,3 +1,5 @@
+"use client";
+
 import { useArticles } from "@/hooks/use-articles";
 import { useProducts } from "@/hooks/use-products";
 import { FileText, Package, Eye, Clock } from "lucide-react";
@@ -25,10 +27,7 @@ export default function AdminDashboard() {
         {stats.map((s) => (
           <Card key={s.label} className="border-[#e2e8f0]">
             <CardContent className="p-5 flex items-center gap-4">
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ background: `${s.color}10`, color: s.color }}
-              >
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: `${s.color}10`, color: s.color }}>
                 <s.icon className="w-6 h-6" />
               </div>
               <div>
@@ -43,16 +42,9 @@ export default function AdminDashboard() {
       <h2 className="text-lg font-bold text-[#0f172a] mb-4">最近文章</h2>
       <div className="space-y-3">
         {articles.slice(0, 5).map((a) => (
-          <div
-            key={a.id}
-            className="flex items-center justify-between p-4 bg-white rounded-lg border border-[#e2e8f0]"
-          >
+          <div key={a.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-[#e2e8f0]">
             <div className="flex items-center gap-3">
-              <span
-                className={`px-2 py-0.5 rounded text-xs font-medium ${
-                  a.status === 1 ? "bg-green-50 text-green-600" : "bg-amber-50 text-amber-600"
-                }`}
-              >
+              <span className={`px-2 py-0.5 rounded text-xs font-medium ${a.status === 1 ? "bg-green-50 text-green-600" : "bg-amber-50 text-amber-600"}`}>
                 {a.status === 1 ? "已发布" : "草稿"}
               </span>
               <span className="font-medium text-sm text-[#0f172a]">{a.title}</span>

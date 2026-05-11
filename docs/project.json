@@ -3,6 +3,6 @@
   "sub_project_type": "",
   "name": "云幻教育官网",
   "app_slug": "yunhuan-edu",
-  "version_description": "恢复产品数据中文+完善前端展示",
+  "version_description": "完成Next.js SSR迁移",
   "preview_type": "pc"
 }

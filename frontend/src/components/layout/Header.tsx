@@ -1,6 +1,9 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Phone, Settings } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 
@@ -14,10 +17,10 @@ const navItems = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   // Hide header on admin pages
-  if (location.pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin")) return null;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -27,7 +30,7 @@ export function Header() {
 
   useEffect(() => {
     setMobileOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <header
@@ -40,7 +43,7 @@ export function Header() {
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
             <div
               className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-lg"
               style={{ background: "linear-gradient(135deg, #1a56db 0%, #3b82f6 100%)" }}
@@ -68,19 +71,19 @@ export function Header() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
+              const isActive = pathname === item.path;
               return (
                 <Link
                   key={item.path}
-                  to={item.path}
+                  href={item.path}
                   className={`px-5 py-2 rounded-md text-sm font-medium transition-all duration-200 relative ${
                     isActive
                       ? scrolled
                         ? "text-[#1a56db]"
                         : "text-white"
                       : scrolled
-                        ? "text-[#475569] hover:text-[#1a56db] hover:bg-[#f1f5f9]"
-                        : "text-white/80 hover:text-white hover:bg-white/10"
+                      ? "text-[#475569] hover:text-[#1a56db] hover:bg-[#f1f5f9]"
+                      : "text-white/80 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   {item.label}
@@ -111,7 +114,7 @@ export function Header() {
               className="text-sm font-medium text-white border-0"
               style={{ background: "linear-gradient(135deg, #1a56db 0%, #3b82f6 100%)" }}
             >
-              <Link to="/contact">免费体验</Link>
+              <Link href="/contact">免费体验</Link>
             </Button>
           </div>
 
@@ -151,16 +154,17 @@ export function Header() {
                   </div>
                   <nav className="flex flex-col py-4">
                     {navItems.map((item) => {
-                      const isActive = location.pathname === item.path;
+                      const isActive = pathname === item.path;
                       return (
                         <Link
                           key={item.path}
-                          to={item.path}
+                          href={item.path}
                           className={`px-6 py-3 text-base font-medium transition-colors ${
                             isActive
                               ? "text-[#1a56db] bg-[#eff6ff]"
                               : "text-[#0f172a] hover:bg-[#f8fafc]"
                           }`}
+                          onClick={() => setMobileOpen(false)}
                         >
                           {item.label}
                         </Link>
@@ -180,7 +184,7 @@ export function Header() {
                       className="w-full text-white font-medium"
                       style={{ background: "linear-gradient(135deg, #1a56db 0%, #3b82f6 100%)" }}
                     >
-                      <Link to="/contact">免费体验</Link>
+                      <Link href="/contact">免费体验</Link>
                     </Button>
                   </div>
                 </div>

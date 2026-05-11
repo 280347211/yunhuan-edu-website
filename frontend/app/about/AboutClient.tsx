@@ -1,34 +1,13 @@
-import { useState, useEffect } from "react";
+"use client";
+
 import { FadeIn, Stagger, HoverLift, fadeUp, motion } from "@/components/MotionPrimitives";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Eye,
-  Heart,
-  Lightbulb,
-  Award,
-  Target,
-  Users,
-  Building2,
-  TrendingUp,
-} from "lucide-react";
-import api from "@/lib/api-client";
+import { Eye, Heart, Lightbulb, Award, Target, Users, Building2 } from "lucide-react";
 
 const cultureValues = [
-  {
-    icon: Eye,
-    title: "愿景",
-    desc: "成为中国最值得信赖的教育科技企业，让优质教育资源触手可及",
-  },
-  {
-    icon: Target,
-    title: "使命",
-    desc: "以科技创新赋能教育，帮助每一位学生实现更好的学习体验",
-  },
-  {
-    icon: Heart,
-    title: "价值观",
-    desc: "以用户为中心、追求卓越、开放协作、创新进取",
-  },
+  { icon: Eye, title: "愿景", desc: "成为中国最值得信赖的教育科技企业，让优质教育资源触手可及" },
+  { icon: Target, title: "使命", desc: "以科技创新赋能教育，帮助每一位学生实现更好的学习体验" },
+  { icon: Heart, title: "价值观", desc: "以用户为中心、追求卓越、开放协作、创新进取" },
 ];
 
 const milestones = [
@@ -56,22 +35,18 @@ const teamFeatures = [
   { icon: Building2, value: "20+", label: "省级分公司" },
 ];
 
-export default function About() {
-  const [config, setConfig] = useState<Record<string, string>>({});
+interface AboutClientProps {
+  initialConfig?: Record<string, string>;
+}
 
-  useEffect(() => {
-    api.get("/config").then((d) => {
-      setConfig(d as Record<string, string>);
-    }).catch(() => {});
-  }, []);
-
-  // Use seo_description as company description if available
-  const companyDesc = config.seo_description ||
+export function AboutClient({ initialConfig }: AboutClientProps) {
+  const companyDesc =
+    initialConfig?.seo_description ||
     "云幻教育科技股份有限公司是一家专注于3D/AR/VR教育产品研发的高新技术企业，致力于将前沿科技与教育教学深度融合，为全国中小学校提供优质的虚拟仿真实验解决方案。";
 
   return (
     <main>
-      {/* ── Page Hero ── */}
+      {/* Page Hero */}
       <section className="relative pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0 hero-gradient" />
         <div
@@ -80,18 +55,14 @@ export default function About() {
         />
         <div className="container mx-auto px-6 lg:px-8 relative z-10">
           <FadeIn>
-            <p className="text-[#93c5fd] text-sm font-medium tracking-widest uppercase mb-3">
-              About Us
-            </p>
+            <p className="text-[#93c5fd] text-sm font-medium tracking-widest uppercase mb-3">About Us</p>
             <h1 className="text-white text-4xl lg:text-5xl font-bold mb-4">关于我们</h1>
-            <p className="text-white/70 text-lg max-w-2xl">
-              以科技创新赋能教育，让优质教学资源触手可及
-            </p>
+            <p className="text-white/70 text-lg max-w-2xl">以科技创新赋能教育，让优质教学资源触手可及</p>
           </FadeIn>
         </div>
       </section>
 
-      {/* ── Company Intro ── */}
+      {/* Company Intro */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
@@ -99,13 +70,10 @@ export default function About() {
               <p className="section-en">Company Profile</p>
               <h2 className="section-cn mt-2">公司简介</h2>
               <div className="accent-bar mt-4 mb-6" />
-              <p className="text-[#475569] leading-relaxed mb-4">
-                {companyDesc}
-              </p>
+              <p className="text-[#475569] leading-relaxed mb-4">{companyDesc}</p>
               <p className="text-[#475569] leading-relaxed mb-8">
                 公司先后获得国家高新技术企业、深圳市专精特新企业等荣誉，参与3D教育国家标准制定，是国内3D教育领域的领军企业。
               </p>
-
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 {teamFeatures.map((f) => (
                   <div key={f.label} className="text-center">
@@ -118,22 +86,17 @@ export default function About() {
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <img
-                src="/images/about-team.svg"
-                alt="云幻教育科技公司现代化的办公环境和研发团队工作场景"
-                className="rounded-xl shadow-lg w-full object-cover"
-                style={{ aspectRatio: "4/3" }}
-              />
+              <img src="/images/about-team.svg" alt="云幻教育团队" className="rounded-xl shadow-lg w-full object-cover" style={{ aspectRatio: "4/3" }} />
             </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* ── Culture & Values ── */}
+      {/* Culture & Values */}
       <section className="py-20 lg:py-28" style={{ background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)" }}>
         <div className="container mx-auto px-6 lg:px-8">
           <FadeIn className="text-center mb-14">
-            <p className="section-en">Culture & Values</p>
+            <p className="section-en">Culture &amp; Values</p>
             <h2 className="section-cn mt-2">文化理念</h2>
             <div className="accent-bar mx-auto mt-4" />
           </FadeIn>
@@ -144,10 +107,7 @@ export default function About() {
                 <HoverLift>
                   <Card className="h-full border-[#e2e8f0] hover:border-[#3b82f6]/30 transition-all duration-300 text-center">
                     <CardContent className="p-8">
-                      <div
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5"
-                        style={{ background: "#eff6ff", color: "#1a56db" }}
-                      >
+                      <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5" style={{ background: "#eff6ff", color: "#1a56db" }}>
                         <item.icon className="w-8 h-8" />
                       </div>
                       <h3 className="font-bold text-xl text-[#0f172a] mb-3">{item.title}</h3>
@@ -161,11 +121,11 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Honors ── */}
+      {/* Honors */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="container mx-auto px-6 lg:px-8">
           <FadeIn className="text-center mb-14">
-            <p className="section-en">Honors & Qualifications</p>
+            <p className="section-en">Honors &amp; Qualifications</p>
             <h2 className="section-cn mt-2">荣誉资质</h2>
             <div className="accent-bar mx-auto mt-4" />
           </FadeIn>
@@ -175,10 +135,7 @@ export default function About() {
               <motion.div key={h} variants={fadeUp}>
                 <HoverLift>
                   <div className="flex items-center gap-3 p-5 bg-white rounded-xl border border-[#e2e8f0] hover:border-[#3b82f6]/30 transition-all duration-300">
-                    <div
-                      className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: "#eff6ff", color: "#1a56db" }}
-                    >
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style={{ background: "#eff6ff", color: "#1a56db" }}>
                       <Award className="w-5 h-5" />
                     </div>
                     <span className="font-medium text-sm text-[#0f172a]">{h}</span>
@@ -190,7 +147,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── Development History ── */}
+      {/* Development Timeline */}
       <section className="py-20 lg:py-28" style={{ background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)" }}>
         <div className="container mx-auto px-6 lg:px-8">
           <FadeIn className="text-center mb-14">
@@ -200,30 +157,14 @@ export default function About() {
           </FadeIn>
 
           <div className="relative max-w-3xl mx-auto">
-            {/* Timeline line */}
             <div className="absolute left-6 lg:left-1/2 lg:-translate-x-px top-0 bottom-0 w-0.5 bg-[#e2e8f0]" />
 
             <Stagger className="flex flex-col gap-10">
               {milestones.map((m, idx) => (
-                <motion.div
-                  key={m.year}
-                  variants={fadeUp}
-                  className={`relative flex items-start gap-6 ${
-                    idx % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                  }`}
-                >
-                  {/* Dot */}
-                  <div
-                    className="absolute left-6 lg:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-white z-10"
-                    style={{ background: "#1a56db" }}
-                  />
-
-                  {/* Content */}
+                <motion.div key={m.year} variants={fadeUp} className={`relative flex items-start gap-6 ${idx % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"}`}>
+                  <div className="absolute left-6 lg:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-white z-10" style={{ background: "#1a56db" }} />
                   <div className={`ml-14 lg:ml-0 lg:w-[calc(50%-2rem)] ${idx % 2 === 0 ? "lg:text-right lg:pr-8" : "lg:text-left lg:pl-8 lg:ml-auto"}`}>
-                    <span
-                      className="inline-block text-sm font-bold px-3 py-1 rounded-full mb-2"
-                      style={{ background: "#eff6ff", color: "#1a56db" }}
-                    >
+                    <span className="inline-block text-sm font-bold px-3 py-1 rounded-full mb-2" style={{ background: "#eff6ff", color: "#1a56db" }}>
                       {m.year}
                     </span>
                     <h4 className="font-bold text-[#0f172a] mb-1">{m.title}</h4>

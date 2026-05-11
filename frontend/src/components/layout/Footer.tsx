@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
 
 const footerLinks = {
@@ -78,7 +78,7 @@ export function Footer() {
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
-                      to={link.path}
+                      href={link.path}
                       className="text-sm hover:text-[#3b82f6] transition-colors"
                     >
                       {link.label}
@@ -95,7 +95,7 @@ export function Footer() {
       <div className="border-t border-[#1e293b]">
         <div className="container mx-auto px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-[#64748b]">
-            Copyright 2024 云幻教育科技股份有限公司 版权所有
+            Copyright {new Date().getFullYear()} 云幻教育科技股份有限公司 版权所有
           </p>
           <p className="text-xs text-[#64748b]">
             粤ICP备XXXXXXXX号

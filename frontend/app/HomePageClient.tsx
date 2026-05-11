@@ -1,5 +1,7 @@
+"use client";
+
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { FadeIn, Stagger, HoverLift, fadeUp, motion } from "@/components/MotionPrimitives";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,7 +17,6 @@ import {
   Building2,
   ArrowRight,
 } from "lucide-react";
-import api from "@/lib/api-client";
 
 interface Article {
   id: number;
@@ -44,7 +45,6 @@ interface Product {
   index_content: string;
 }
 
-/* ── Fallback hero slides ── */
 const defaultHeroSlides = [
   { title: "科技赋能教育", subtitle: "3D/AR/VR教育产品领航者", desc: "以创新技术重塑教学体验，让抽象知识触手可及" },
   { title: "虚拟仿真实验", subtitle: "沉浸式学习新范式", desc: "覆盖物理、化学、生物全学科实验场景" },
@@ -65,34 +65,24 @@ const stats = [
   { icon: Monitor, value: "200+", label: "产品专利" },
 ];
 
-export default function Index() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [news, setNews] = useState<Article[]>([]);
-  const [slides, setSlides] = useState<SlideData[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [heroSlides, setHeroSlides] = useState(defaultHeroSlides);
+interface HomePageClientProps {
+  initialData?: {
+    slides: SlideData[];
+    news: Article[];
+    products: Product[];
+  };
+}
 
-  useEffect(() => {
-    // Load slides (fid=1 is homepage slider)
-    api.get("/slides?fid=1").then((d) => setSlides(d as SlideData[])).catch(() => {});
-    // Load news articles (catid=21 = company news)
-    api.get("/articles?catid=21&status=1&pageSize=4").then((d: unknown) => {
-      const resp = d as { items: Article[] };
-      setNews(resp.items || []);
-    }).catch(() => {});
-    // Load solution products (catid=12 = 3D教育解决方案)
-    api.get("/products?catid=12").then((d) => {
-      const prods = d as Product[];
-      if (prods.length > 0) {
-        setProducts(prods.slice(0, 8));
-      } else {
-        // Fallback: load all products
-        api.get("/products").then((d2) => {
-          setProducts((d2 as Product[]).slice(0, 8));
-        }).catch(() => {});
-      }
-    }).catch(() => {});
-  }, []);
+export function HomePageClient({ initialData }: HomePageClientProps) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [news] = useState<Article[]>(initialData?.news || []);
+  const [slides] = useState<SlideData[]>(initialData?.slides || []);
+  const [products] = useState<any[]>(
+    (initialData?.products && initialData.products.length > 0)
+      ? initialData.products
+      : productIcons.map((p, i) => ({ id: i, catid: 0, title: p.title, description: "", thumb: "", iocimg: "", index_content: "" }))
+  );
+  const [heroSlides] = useState(defaultHeroSlides);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -111,11 +101,10 @@ export default function Index() {
 
   return (
     <main>
-      {/* ═══ Hero Banner ═══ */}
+      {/* Hero Banner */}
       <section className="relative min-h-[600px] lg:min-h-[700px] flex items-center overflow-hidden">
         <div className="absolute inset-0 hero-gradient" />
         <div className="absolute inset-0 hero-gradient-overlay" />
-        {/* Background slide image if available */}
         {slides.length > 0 && slides[currentSlide] && (
           <div
             className="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-30"
@@ -146,10 +135,10 @@ export default function Index() {
                 <p className="text-white/70 text-lg mb-8 max-w-xl">{slide.desc}</p>
                 <div className="flex flex-wrap gap-4">
                   <Button asChild size="lg" className="text-white font-medium border-0" style={{ background: "linear-gradient(135deg, #1a56db 0%, #3b82f6 100%)" }}>
-                    <Link to="/products">了解产品</Link>
+                    <Link href="/products">了解产品</Link>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="text-white border-white/30 hover:bg-white/10 font-medium">
-                    <Link to="/contact">联系我们</Link>
+                    <Link href="/contact">联系我们</Link>
                   </Button>
                 </div>
               </div>
@@ -170,11 +159,11 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ═══ Products & Solutions ═══ */}
+      {/* Products & Solutions */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="container mx-auto px-6 lg:px-8">
           <FadeIn className="text-center mb-14">
-            <p className="section-en">Products & Solutions</p>
+            <p className="section-en">Products &amp; Solutions</p>
             <h2 className="section-cn mt-2">产品与方案</h2>
             <div className="accent-bar mx-auto mt-4" />
           </FadeIn>
@@ -193,7 +182,7 @@ export default function Index() {
                         </div>
                         <h3 className="font-bold text-lg text-[#0f172a] mb-3">{p.title}</h3>
                         <p className="text-sm text-[#475569] leading-relaxed mb-4 line-clamp-3">{p.description || p.index_content || "3D教育解决方案，打破传统实验的设备与场地限制"}</p>
-                        <Link to="/products" className="inline-flex items-center gap-1 text-sm font-medium transition-colors" style={{ color: iconInfo.color }}>
+                        <Link href="/products" className="inline-flex items-center gap-1 text-sm font-medium transition-colors" style={{ color: iconInfo.color }}>
                           了解更多 <ArrowRight className="w-4 h-4" />
                         </Link>
                       </CardContent>
@@ -206,7 +195,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ═══ About Us ═══ */}
+      {/* About Us */}
       <section className="py-20 lg:py-28" style={{ background: "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)" }}>
         <div className="container mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
@@ -232,7 +221,7 @@ export default function Index() {
               </div>
 
               <Button asChild variant="outline" className="mt-8 border-[#1a56db] text-[#1a56db] hover:bg-[#1a56db] hover:text-white font-medium">
-                <Link to="/about">了解更多</Link>
+                <Link href="/about">了解更多</Link>
               </Button>
             </FadeIn>
 
@@ -246,7 +235,7 @@ export default function Index() {
         </div>
       </section>
 
-      {/* ═══ News ═══ */}
+      {/* News */}
       <section className="py-20 lg:py-28 bg-white">
         <div className="container mx-auto px-6 lg:px-8">
           <FadeIn className="flex items-end justify-between mb-12">
@@ -258,7 +247,7 @@ export default function Index() {
           </FadeIn>
 
           <Stagger className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {news.map((n) => (
+            {news.length > 0 ? news.map((n) => (
               <motion.div key={n.id} variants={fadeUp}>
                 <HoverLift>
                   <div className="flex gap-5 p-5 bg-white rounded-xl border border-[#e2e8f0] hover:border-[#3b82f6]/30 transition-all duration-300 cursor-pointer">
@@ -277,12 +266,28 @@ export default function Index() {
                   </div>
                 </HoverLift>
               </motion.div>
-            ))}
+            )) : (
+              // Fallback when no news data
+              Array.from({ length: 4 }).map((_, i) => (
+                <motion.div key={`fallback-${i}`} variants={fadeUp}>
+                  <div className="flex gap-5 p-5 bg-white rounded-xl border border-[#e2e8f0]">
+                    <div className="flex flex-col items-center justify-center w-16 shrink-0 rounded-lg" style={{ background: "#eff6ff" }}>
+                      <span className="text-[#1a56db] font-bold text-sm">{15 + i}</span>
+                      <span className="text-[#475569] text-xs">1/2025</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-[#0f172a] text-sm leading-relaxed">云幻教育最新动态资讯</h4>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-[#94a3b8] shrink-0 mt-1" />
+                  </div>
+                </motion.div>
+              ))
+            )}
           </Stagger>
         </div>
       </section>
 
-      {/* ═══ CTA Banner ═══ */}
+      {/* CTA Banner */}
       <section className="py-20 hero-gradient relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(circle at 80% 20%, rgba(59,130,246,0.3) 0%, transparent 50%)" }} />
         <div className="container mx-auto px-6 lg:px-8 text-center relative z-10">
@@ -291,10 +296,10 @@ export default function Index() {
             <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">让我们一起用科技改变教育，让每一位学生都能享受优质的教学资源</p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button asChild size="lg" className="text-[#1a56db] bg-white hover:bg-[#f0f4ff] font-medium border-0">
-                <Link to="/contact">预约演示</Link>
+                <Link href="/contact">预约演示</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="text-white border-white/30 hover:bg-white/10 font-medium">
-                <Link to="/products">查看方案</Link>
+                <Link href="/products">查看方案</Link>
               </Button>
             </div>
           </FadeIn>
