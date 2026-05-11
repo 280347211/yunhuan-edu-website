@@ -3,6 +3,6 @@
   "sub_project_type": "",
   "name": "云幻教育官网",
   "app_slug": "yunhuan-edu",
-  "version_description": "修复中文编码+更新管理后台",
+  "version_description": "恢复产品数据中文+完善前端展示",
   "preview_type": "pc"
 }
