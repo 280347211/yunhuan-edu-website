@@ -7,41 +7,34 @@ import { toast } from "sonner";
 
 const configGroups = [
   {
-    title: "公司基本信息",
+    title: "网站基本信息",
     fields: [
-      { key: "company_name", label: "公司全称" },
-      { key: "company_short", label: "公司简称" },
-      { key: "company_en", label: "英文名称" },
-      { key: "company_desc", label: "公司简介", multiline: true },
+      { key: "site_name", label: "网站名称" },
+      { key: "site_url", label: "网站地址" },
+      { key: "logo", label: "Logo路径" },
+      { key: "site_email", label: "站点邮箱" },
+    ],
+  },
+  {
+    title: "SEO设置",
+    fields: [
+      { key: "seo_title", label: "网站标题", multiline: true },
+      { key: "seo_keywords", label: "关键词", multiline: true },
+      { key: "seo_description", label: "网站简介", multiline: true },
     ],
   },
   {
     title: "联系方式",
     fields: [
-      { key: "phone", label: "服务热线" },
-      { key: "email", label: "电子邮箱" },
+      { key: "phone", label: "联系电话" },
       { key: "address", label: "公司地址" },
       { key: "icp", label: "ICP备案号" },
-    ],
-  },
-  {
-    title: "首页横幅",
-    fields: [
-      { key: "hero_title_1", label: "横幅1标题" },
-      { key: "hero_subtitle_1", label: "横幅1副标题" },
-      { key: "hero_desc_1", label: "横幅1描述" },
-      { key: "hero_title_2", label: "横幅2标题" },
-      { key: "hero_subtitle_2", label: "横幅2副标题" },
-      { key: "hero_desc_2", label: "横幅2描述" },
-      { key: "hero_title_3", label: "横幅3标题" },
-      { key: "hero_subtitle_3", label: "横幅3副标题" },
-      { key: "hero_desc_3", label: "横幅3描述" },
     ],
   },
 ];
 
 export default function AdminSettings() {
-  const { config, loading, batchUpdate } = useSiteConfig();
+  const { config, loading, update } = useSiteConfig();
   const [form, setForm] = useState<Record<string, string>>({});
 
   useEffect(() => {
@@ -50,7 +43,12 @@ export default function AdminSettings() {
 
   const handleSave = async () => {
     try {
-      await batchUpdate(form);
+      // Only save changed values
+      for (const [key, value] of Object.entries(form)) {
+        if (config[key] !== value) {
+          await update(key, value);
+        }
+      }
       toast.success("设置已保存");
     } catch {
       toast.error("保存失败");

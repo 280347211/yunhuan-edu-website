@@ -1,14 +1,18 @@
 import { Router } from "express";
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import { env } from "../config/env.js";
-import { prisma } from "../config/db.js";
 
 export const imageRouter = Router();
 
+// Ensure upload directory exists
+const uploadDir = path.resolve(process.cwd(), env.UPLOAD_DIR);
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    cb(null, env.UPLOAD_DIR);
+    cb(null, uploadDir);
   },
   filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname);
@@ -27,38 +31,55 @@ const upload = multer({
   },
 });
 
-// GET all images
+// GET all images (list files from upload directory)
 imageRouter.get("/", async (_req, res) => {
-  const images = await prisma.image.findMany({ orderBy: { createdAt: "desc" } });
-  res.json(images.map((img) => ({ ...img, path: `/uploads/${img.filename}` })));
+  try {
+    const files = fs.readdirSync(uploadDir);
+    const images = files
+      .filter((f) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
+      .map((f, idx) => {
+        const stat = fs.statSync(path.join(uploadDir, f));
+        return {
+          id: idx + 1,
+          filename: f,
+          original: f,
+          path: `/uploads/${f}`,
+          size: stat.size,
+          createdAt: stat.mtime.toISOString(),
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    res.json(images);
+  } catch {
+    res.json([]);
+  }
 });
 
 // POST upload image
 imageRouter.post("/", upload.single("file"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
-  const image = await prisma.image.create({
-    data: {
-      filename: req.file.filename,
-      original: req.file.originalname,
-      path: `/uploads/${req.file.filename}`,
-      alt: req.body.alt || "",
-      category: req.body.category || "general",
-    },
+  res.status(201).json({
+    filename: req.file.filename,
+    original: req.file.originalname,
+    path: `/uploads/${req.file.filename}`,
+    size: req.file.size,
   });
-  res.status(201).json({ ...image, path: `/uploads/${image.filename}` });
 });
 
 // DELETE image
-imageRouter.delete("/:id", async (req, res) => {
-  const img = await prisma.image.findUnique({ where: { id: Number(req.params.id) } });
-  if (!img) return res.status(404).json({ error: "Image not found" });
+imageRouter.delete("/:filename", async (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(uploadDir, filename);
 
-  // Delete file from disk
-  const fs = await import("fs");
-  const filePath = path.join(env.UPLOAD_DIR, img.filename);
-  if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+  // Security check: prevent directory traversal
+  if (!filePath.startsWith(uploadDir)) {
+    return res.status(400).json({ error: "Invalid filename" });
+  }
 
-  await prisma.image.delete({ where: { id: Number(req.params.id) } });
-  res.json({ success: true });
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ error: "Image not found" });
+  }
 });

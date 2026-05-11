@@ -3,3 +3,6 @@ dist/
 .env
 *.log
 backend/uploads/
+backend/mysql-data/
+backend/public/Uploads/
+*.sql

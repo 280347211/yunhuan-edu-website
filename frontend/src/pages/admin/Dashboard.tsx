@@ -1,20 +1,20 @@
 import { useArticles } from "@/hooks/use-articles";
-import { useImages } from "@/hooks/use-images";
-import { FileText, Image, Eye, Clock } from "lucide-react";
+import { useProducts } from "@/hooks/use-products";
+import { FileText, Package, Eye, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function AdminDashboard() {
-  const { articles } = useArticles();
-  const { images } = useImages();
+  const { items: articles, total: articleTotal } = useArticles({ status: 1 });
+  const { products } = useProducts();
 
-  const publishedCount = articles.filter((a) => a.published).length;
-  const draftCount = articles.filter((a) => !a.published).length;
+  const publishedCount = articles.filter((a) => a.status === 1).length;
+  const draftCount = articles.filter((a) => a.status === 0).length;
 
   const stats = [
-    { icon: FileText, label: "文章总数", value: articles.length, color: "#1a56db" },
+    { icon: FileText, label: "文章总数", value: articleTotal, color: "#1a56db" },
     { icon: Eye, label: "已发布", value: publishedCount, color: "#22c55e" },
     { icon: Clock, label: "草稿", value: draftCount, color: "#f59e0b" },
-    { icon: Image, label: "图片", value: images.length, color: "#6366f1" },
+    { icon: Package, label: "产品数", value: products.length, color: "#6366f1" },
   ];
 
   return (
@@ -50,15 +50,15 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-3">
               <span
                 className={`px-2 py-0.5 rounded text-xs font-medium ${
-                  a.published ? "bg-green-50 text-green-600" : "bg-amber-50 text-amber-600"
+                  a.status === 1 ? "bg-green-50 text-green-600" : "bg-amber-50 text-amber-600"
                 }`}
               >
-                {a.published ? "已发布" : "草稿"}
+                {a.status === 1 ? "已发布" : "草稿"}
               </span>
               <span className="font-medium text-sm text-[#0f172a]">{a.title}</span>
             </div>
             <span className="text-xs text-[#94a3b8]">
-              {new Date(a.createdAt).toLocaleDateString()}
+              {a.createtime ? new Date(a.createtime * 1000).toLocaleDateString("zh-CN") : "-"}
             </span>
           </div>
         ))}

@@ -40,7 +40,7 @@ importers:
         specifier: ^22.7.9
         version: 22.19.18
       prisma:
-        specifier: ^5.22.0
+        specifier: '5'
         version: 5.22.0
       tsx:
         specifier: ^4.19.1

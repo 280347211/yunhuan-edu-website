@@ -3,34 +3,142 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-model Article {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  summary   String?
-  cover     String?
-  category  String   @default("news")
-  published Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model dc_article {
+  id          Int      @id @default(autoincrement())
+  catid       Int      @default(0) @map("catid")
+  userid      Int      @default(0) @map("userid")
+  username    String   @default("") @map("username") @db.VarChar(40)
+  title       String   @default("") @db.VarChar(120)
+  title_style String   @default("") @map("title_style") @db.VarChar(40)
+  keywords    String   @default("") @db.VarChar(500)
+  copyfrom    String   @default("") @db.VarChar(255)
+  fromlink    String   @default("") @db.VarChar(255)
+  description String   @db.MediumText
+  content     String   @db.MediumText
+  template    String   @default("") @db.VarChar(30)
+  thumb       String   @default("") @db.VarChar(100)
+  posid       Int      @default(0) @map("posid") @db.TinyInt
+  status      Int      @default(0) @db.TinyInt
+  recommend   Int      @default(1) @db.TinyInt
+  readgroup   String   @default("") @db.VarChar(255)
+  readpoint   Int      @default(0)
+  listorder   Int      @default(0)
+  url         String   @default("") @db.VarChar(150)
+  hits        Int      @default(0)
+  createtime  Int      @default(0) @map("createtime")
+  updatetime  Int      @default(0) @map("updatetime")
+  name        String   @default("") @db.VarChar(255)
+  lang        Int      @default(0) @db.TinyInt
+
+  @@map("dc_article")
 }
 
-model SiteConfig {
-  id    Int    @id @default(autoincrement())
-  key   String @unique
-  value String
+model dc_product {
+  id           Int      @id @default(autoincrement())
+  catid        Int      @default(0) @map("catid") @db.SmallInt
+  userid       Int      @default(0) @map("userid")
+  username     String   @default("") @map("username") @db.VarChar(40)
+  title        String   @default("") @db.VarChar(120)
+  title_style  String   @default("") @map("title_style") @db.VarChar(40)
+  keywords     String   @default("") @db.VarChar(500)
+  description  String   @db.MediumText
+  content      String   @db.Text
+  template     String   @default("") @db.VarChar(40)
+  thumb        String   @default("") @db.VarChar(100)
+  posid        Int      @default(0) @map("posid") @db.TinyInt
+  status       Int      @default(1) @db.TinyInt
+  recommend    Int      @default(0) @db.TinyInt
+  readgroup    String   @default("") @db.VarChar(100)
+  readpoint    Int      @default(0) @db.SmallInt
+  listorder    Int      @default(0)
+  hits         Int      @default(0)
+  createtime   Int      @default(0) @map("createtime")
+  updatetime   Int      @default(0) @map("updatetime")
+  price        String   @default("") @db.VarChar(255)
+  url          String   @default("") @db.VarChar(150)
+  xinghao      String   @default("") @db.VarChar(30) @map("xinghao")
+  pics         String   @db.MediumText
+  lang         Int      @default(0) @db.TinyInt
+  iocimg       String   @default("") @db.VarChar(80) @map("iocimg")
+  parameter    String   @db.Text
+  content_b    String   @db.Text @map("content_b")
+  index_content String  @db.Text @map("index_content")
+  advantages   String   @db.Text
+  pronum       String   @default("") @db.VarChar(255) @map("pronum")
+  weight       String   @default("") @db.VarChar(255)
+  videofile    String   @default("") @db.VarChar(80)
+  proimga      String   @default("") @db.VarChar(80) @map("proimga")
+  proimgb      String   @default("") @db.VarChar(80) @map("proimgb")
+  tags         String   @default("") @db.VarChar(255)
+  order_phone  String   @default("") @db.VarChar(255) @map("order_phone")
+  content_c    String   @db.Text @map("content_c")
+  content_d    String   @db.Text @map("content_d")
+
+  @@map("dc_product")
 }
 
-model Image {
-  id        Int      @id @default(autoincrement())
-  filename  String
-  original  String
-  path      String
-  alt       String?
-  category  String?
-  createdAt DateTime @default(now())
+model dc_category {
+  id              Int      @id @default(autoincrement()) @db.SmallInt
+  catname         String   @default("") @db.VarChar(60) @map("catname")
+  en_catname      String   @default("") @db.VarChar(60) @map("en_catname")
+  catdir          String   @default("") @db.VarChar(30) @map("catdir")
+  parentdir       String   @default("") @db.VarChar(50) @map("parentdir")
+  parentid        Int      @default(0) @db.SmallInt @map("parentid")
+  moduleid        Int      @default(0) @db.TinyInt @map("moduleid")
+  module          String   @default("") @db.Char(24)
+  arrparentid     String   @default("") @db.VarChar(255) @map("arrparentid")
+  arrchildid      String   @default("") @db.VarChar(255) @map("arrchildid")
+  type            Int      @default(0) @db.TinyInt
+  title           String   @default("") @db.VarChar(150)
+  keywords        String   @default("") @db.VarChar(500)
+  nav_icon        String?  @db.VarChar(100) @map("nav_icon")
+  nav_iconb       String?  @db.VarChar(100) @map("nav_iconb")
+  description     String?  @db.Text
+  listorder       Int      @default(0) @db.SmallInt
+  ishtml          Int      @default(0) @db.TinyInt @map("ishtml")
+  ismenu          Int      @default(0) @db.TinyInt @map("ismenu")
+  hits            Int      @default(0)
+  image           String   @default("") @db.VarChar(100)
+  child           Int      @default(0) @db.TinyInt
+  url             String   @default("") @db.VarChar(150)
+  template_list   String   @default("") @db.VarChar(20) @map("template_list")
+  template_show   String   @default("") @db.VarChar(20) @map("template_show")
+  pagesize        Int      @default(0) @db.TinyInt
+  readgroup       String   @default("") @db.VarChar(100)
+  listtype        Int      @default(0) @db.TinyInt @map("listtype")
+  lang            Int      @default(0) @db.TinyInt
+  urlruleid       Int      @default(0) @db.TinyInt @map("urlruleid")
+
+  @@map("dc_category")
+}
+
+model dc_slide_data {
+  id          Int      @id @default(autoincrement())
+  fid         Int      @default(0) @db.TinyInt @map("fid")
+  title       String   @default("") @db.VarChar(30)
+  small       String   @default("") @db.VarChar(150)
+  pic         String   @default("") @db.VarChar(150)
+  link        String   @default("") @db.VarChar(150)
+  description String?  @db.VarChar(255)
+  data        String?  @db.Text
+  listorder   Int      @default(0) @db.SmallInt
+  status      Int      @default(0) @db.TinyInt
+  lang        Int      @default(0) @db.TinyInt
+
+  @@map("dc_slide_data")
+}
+
+model dc_config {
+  id       Int     @id @default(autoincrement()) @db.SmallInt
+  varname  String  @default("") @db.VarChar(20) @map("varname")
+  info     String  @default("") @db.VarChar(100)
+  groupid  Int     @default(1) @db.TinyInt @map("groupid")
+  value    String? @db.Text
+  lang     Int     @default(0) @db.TinyInt
+
+  @@map("dc_config")
 }

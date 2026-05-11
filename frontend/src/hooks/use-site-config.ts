@@ -11,22 +11,17 @@ export function useSiteConfig() {
 
   const fetch = async () => {
     setLoading(true);
-    const data = await api.get("/site-config");
+    const data = await api.get("/config");
     setConfig(data as unknown as SiteConfig);
     setLoading(false);
   };
 
   useEffect(() => { fetch(); }, []);
 
-  const update = async (key: string, value: string) => {
-    await api.put(`/site-config/${key}`, { value });
-    setConfig((prev) => ({ ...prev, [key]: value }));
+  const update = async (name: string, value: string) => {
+    await api.put(`/config/${name}`, { value });
+    setConfig((prev) => ({ ...prev, [name]: value }));
   };
 
-  const batchUpdate = async (configs: SiteConfig) => {
-    await api.post("/site-config/batch", { configs });
-    await fetch();
-  };
-
-  return { config, loading, update, batchUpdate, refetch: fetch };
+  return { config, loading, update, refetch: fetch };
 }
