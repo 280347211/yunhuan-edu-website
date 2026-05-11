@@ -3,6 +3,6 @@
   "sub_project_type": "",
   "name": "云幻教育官网",
   "app_slug": "yunhuan-edu",
-  "version_description": "Next.js SSR迁移完成，SEO优化就绪",
+  "version_description": "修复Next.js启动问题，服务正常运行",
   "preview_type": "pc"
 }

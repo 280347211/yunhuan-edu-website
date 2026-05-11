@@ -1,6 +1,6 @@
 [[app]]
 name = "frontend"
-cmd = "cd frontend && pnpm install && [ -d .next ] || npx next build && npx next start --port 5173"
+cmd = "cd frontend && pnpm install && node -e \"const{execSync}=require('child_process');execSync('npx next build',{stdio:'inherit',maxBuffer:50*1024*1024})\" && npx next start --port 5173"
 autoRun = true
 port = 5173
 
