@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import "./globals.css";
+import GlobalStyles from "./GlobalStyles";
 
 export const metadata: Metadata = {
   title: {
@@ -22,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <body className="antialiased">
+        <GlobalStyles />
         <TooltipProvider>
           <Toaster />
           <Header />
