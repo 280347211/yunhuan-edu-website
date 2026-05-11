@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { FadeIn, Stagger, HoverLift, fadeUp, motion } from "@/components/MotionPrimitives";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -10,6 +11,7 @@ import {
   Building2,
   TrendingUp,
 } from "lucide-react";
+import api from "@/lib/api-client";
 
 const cultureValues = [
   {
@@ -55,6 +57,18 @@ const teamFeatures = [
 ];
 
 export default function About() {
+  const [config, setConfig] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    api.get("/config").then((d) => {
+      setConfig(d as Record<string, string>);
+    }).catch(() => {});
+  }, []);
+
+  // Use seo_description as company description if available
+  const companyDesc = config.seo_description ||
+    "云幻教育科技股份有限公司是一家专注于3D/AR/VR教育产品研发的高新技术企业，致力于将前沿科技与教育教学深度融合，为全国中小学校提供优质的虚拟仿真实验解决方案。";
+
   return (
     <main>
       {/* ── Page Hero ── */}
@@ -86,10 +100,7 @@ export default function About() {
               <h2 className="section-cn mt-2">公司简介</h2>
               <div className="accent-bar mt-4 mb-6" />
               <p className="text-[#475569] leading-relaxed mb-4">
-                云幻教育科技股份有限公司成立于2014年，总部位于深圳，是一家专注于3D/AR/VR教育产品研发的高新技术企业。公司秉承"科技赋能教育"的理念，将虚拟现实、增强现实等前沿技术与教育教学深度融合。
-              </p>
-              <p className="text-[#475569] leading-relaxed mb-4">
-                十年来，云幻教育始终坚持以用户需求为导向，持续投入核心技术研发，打造了涵盖3D虚拟实验室、虚拟仿真实验平台、智慧教育装备等完整的产品体系，为全国中小学提供一站式教育信息化解决方案。
+                {companyDesc}
               </p>
               <p className="text-[#475569] leading-relaxed mb-8">
                 公司先后获得国家高新技术企业、深圳市专精特新企业等荣誉，参与3D教育国家标准制定，是国内3D教育领域的领军企业。

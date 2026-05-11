@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FadeIn, Stagger, fadeUp, motion } from "@/components/MotionPrimitives";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,39 +13,10 @@ import {
   Send,
   CheckCircle,
 } from "lucide-react";
-
-const contactInfo = [
-  {
-    icon: Phone,
-    title: "服务热线",
-    content: "400-888-8888",
-    sub: "周一至周五 9:00-18:00",
-    href: "tel:400-888-8888",
-  },
-  {
-    icon: Mail,
-    title: "电子邮箱",
-    content: "contact@magicloudedu.com",
-    sub: "商务合作与咨询",
-    href: "mailto:contact@magicloudedu.com",
-  },
-  {
-    icon: MapPin,
-    title: "公司地址",
-    content: "广东省深圳市南山区",
-    sub: "科技园南区云幻大厦",
-    href: null,
-  },
-  {
-    icon: Clock,
-    title: "工作时间",
-    content: "周一至周五",
-    sub: "9:00 - 18:00",
-    href: null,
-  },
-];
+import api from "@/lib/api-client";
 
 export default function Contact() {
+  const [config, setConfig] = useState<Record<string, string>>({});
   const [formState, setFormState] = useState({
     name: "",
     phone: "",
@@ -54,6 +25,43 @@ export default function Contact() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    api.get("/config").then((d) => {
+      setConfig(d as Record<string, string>);
+    }).catch(() => {});
+  }, []);
+
+  const contactInfo = [
+    {
+      icon: Phone,
+      title: "服务热线",
+      content: config.site_tel || "4008-988-168",
+      sub: "周一至周五 9:00-18:00",
+      href: `tel:${config.site_tel || "4008-988-168"}`,
+    },
+    {
+      icon: Mail,
+      title: "电子邮箱",
+      content: config.site_email || "market@yunhuanedu.com",
+      sub: "商务合作与咨询",
+      href: `mailto:${config.site_email || "market@yunhuanedu.com"}`,
+    },
+    {
+      icon: MapPin,
+      title: "公司地址",
+      content: config.address ? config.address.split("，")[0] : "广东省深圳市南山区",
+      sub: config.address ? config.address.split("，").slice(1).join("，") || "科技园南区" : "科技园南区英唐大厦三楼",
+      href: null,
+    },
+    {
+      icon: Clock,
+      title: "工作时间",
+      content: "周一至周五",
+      sub: "9:00 - 18:00",
+      href: null,
+    },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -230,9 +238,10 @@ export default function Contact() {
                 >
                   <div className="text-center text-white p-8">
                     <MapPin className="w-12 h-12 mx-auto mb-4 opacity-80" />
-                    <h4 className="font-bold text-lg mb-2">广东省深圳市南山区</h4>
-                    <p className="text-white/70 text-sm">科技园南区云幻大厦</p>
-                    <p className="text-white/50 text-xs mt-4">地铁：1号线深大站A出口步行5分钟</p>
+                    <h4 className="font-bold text-lg mb-2">{config.address || "广东省深圳市南山区科技园南区"}</h4>
+                    <p className="text-white/70 text-sm">云幻教育科技股份有限公司</p>
+                    <p className="text-white/50 text-xs mt-4">电话：{config.site_tel || "4008-988-168"}</p>
+                    <p className="text-white/50 text-xs mt-1">邮箱：{config.site_email || "market@yunhuanedu.com"}</p>
                   </div>
                 </div>
               </div>

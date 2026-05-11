@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FadeIn, Stagger, HoverLift, fadeUp, motion } from "@/components/MotionPrimitives";
 import { Button } from "@/components/ui/button";
@@ -15,39 +15,52 @@ import {
   Wifi,
   Shield,
 } from "lucide-react";
+import api from "@/lib/api-client";
 
+interface Product {
+  id: number;
+  catid: number;
+  title: string;
+  description: string;
+  thumb: string;
+  iocimg: string;
+  index_content: string;
+  advantages: string;
+  content: string;
+}
+
+interface Category {
+  id: number;
+  catname: string;
+  en_catname: string;
+  children?: Category[];
+}
+
+// Fallback data for product categories
 const productCategories = [
   {
-    id: "lab",
+    id: 11,
     icon: Monitor,
-    title: "3D/AR/VR实验室",
-    desc: "沉浸式虚拟实验室解决方案，打破传统实验的设备与场地限制，让学生在虚拟环境中自由探索、安全操作。",
-    features: ["3D沉浸式实验操作", "AR增强现实叠加", "VR全景实验体验", "多学科全覆盖"],
+    title: "3D教育资源库",
+    desc: "丰富的3D互动课件与教学资源，与教材章节深度匹配，覆盖物理、化学、生物、科学、数学等全学科。",
+    features: ["教材章节精准匹配", "3D互动演示模型", "多学科全覆盖", "持续更新迭代"],
     color: "#1a56db",
   },
   {
-    id: "platform",
+    id: 12,
     icon: FlaskConical,
-    title: "虚拟仿真实验平台",
-    desc: "覆盖中考实验操作全考点，AI智能评分实时反馈，助力学生高效备考，教师精准教学。",
-    features: ["中考实验全覆盖", "AI智能评分系统", "实验操作实时指导", "学习数据追踪分析"],
+    title: "3D教育解决方案",
+    desc: "沉浸式虚拟实验室解决方案，打破传统实验的设备与场地限制，让学生在虚拟环境中自由探索、安全操作。",
+    features: ["3D沉浸式实验操作", "AR增强现实叠加", "VR全景实验体验", "AI智能评分系统"],
     color: "#3b82f6",
   },
   {
-    id: "resource",
+    id: 13,
     icon: BookOpen,
-    title: "3D教学资源库",
-    desc: "丰富的3D互动课件与教学资源，与教材章节深度匹配，让课堂教学更生动直观。",
-    features: ["教材章节精准匹配", "3D互动演示模型", "多版本教材覆盖", "持续更新迭代"],
-    color: "#0ea5e9",
-  },
-  {
-    id: "equipment",
-    icon: GraduationCap,
-    title: "智慧教育装备",
+    title: "3D教育设备",
     desc: "3D互动教学一体机、AR实验台等硬件装备，软硬一体化，打造现代化智慧教室。",
     features: ["3D互动教学一体机", "AR实验操作台", "智能中控系统", "一体化解决方案"],
-    color: "#6366f1",
+    color: "#0ea5e9",
   },
 ];
 
@@ -79,8 +92,39 @@ const techAdvantages = [
 ];
 
 export default function Products() {
-  const [activeTab, setActiveTab] = useState("lab");
-  const activeProduct = productCategories.find((p) => p.id === activeTab)!;
+  const [activeTab, setActiveTab] = useState(11);
+  const [products, setProducts] = useState<Record<number, Product[]>>({});
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    // Load product subcategories under "产品与方案" (id=2)
+    api.get("/categories", { params: { parentid: 2 } }).then((d) => {
+      const cats = (d as Category[]).filter((c) => c.catname.includes("产品") || c.id >= 11);
+      if (cats.length > 0) {
+        setCategories(cats);
+        setActiveTab(cats[0].id);
+      }
+    }).catch(() => {});
+
+    // Load all products grouped by catid
+    api.get("/products").then((d) => {
+      const prods = d as Product[];
+      const grouped: Record<number, Product[]> = {};
+      prods.forEach((p) => {
+        if (!grouped[p.catid]) grouped[p.catid] = [];
+        grouped[p.catid].push(p);
+      });
+      setProducts(grouped);
+    }).catch(() => {});
+  }, []);
+
+  const activeCat = categories.find((c) => c.id === activeTab) ||
+    productCategories.find((c) => c.id === activeTab) || productCategories[0];
+  const activeProducts = products[activeTab] || [];
+  const activeFallback = productCategories.find((c) => c.id === activeTab) || productCategories[0];
+
+  // Build tab list: real categories + fallback
+  const tabs = categories.length > 0 ? categories : productCategories;
 
   return (
     <main>
@@ -115,37 +159,41 @@ export default function Products() {
 
           {/* Category Tabs */}
           <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {productCategories.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => setActiveTab(p.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  activeTab === p.id
-                    ? "text-white shadow-md"
-                    : "text-[#475569] bg-[#f1f5f9] hover:bg-[#e2e8f0]"
-                }`}
-                style={
-                  activeTab === p.id
-                    ? { background: "linear-gradient(135deg, #1a56db 0%, #3b82f6 100%)" }
-                    : undefined
-                }
-              >
-                <p.icon className="w-4 h-4" />
-                {p.title}
-              </button>
-            ))}
+            {tabs.map((cat) => {
+              const fallback = productCategories.find((c) => c.id === cat.id);
+              const IconComp = fallback?.icon || Monitor;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveTab(cat.id)}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeTab === cat.id
+                      ? "text-white shadow-md"
+                      : "text-[#475569] bg-[#f1f5f9] hover:bg-[#e2e8f0]"
+                  }`}
+                  style={
+                    activeTab === cat.id
+                      ? { background: "linear-gradient(135deg, #1a56db 0%, #3b82f6 100%)" }
+                      : undefined
+                  }
+                >
+                  <IconComp className="w-4 h-4" />
+                  {cat.catname}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Active Product Detail */}
+          {/* Active Category Detail */}
           <FadeIn key={activeTab}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div>
-                <h3 className="text-2xl font-bold text-[#0f172a] mb-4">{activeProduct.title}</h3>
-                <p className="text-[#475569] leading-relaxed mb-6">{activeProduct.desc}</p>
+                <h3 className="text-2xl font-bold text-[#0f172a] mb-4">{activeCat.catname || activeFallback.title}</h3>
+                <p className="text-[#475569] leading-relaxed mb-6">{activeFallback.desc}</p>
                 <ul className="space-y-3 mb-8">
-                  {activeProduct.features.map((f) => (
+                  {activeFallback.features.map((f) => (
                     <li key={f} className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 shrink-0" style={{ color: activeProduct.color }} />
+                      <CheckCircle className="w-5 h-5 shrink-0" style={{ color: activeFallback.color }} />
                       <span className="text-[#0f172a] text-sm">{f}</span>
                     </li>
                   ))}
@@ -153,18 +201,37 @@ export default function Products() {
                 <Button
                   asChild
                   className="text-white font-medium border-0"
-                  style={{ background: `linear-gradient(135deg, ${activeProduct.color} 0%, #3b82f6 100%)` }}
+                  style={{ background: `linear-gradient(135deg, ${activeFallback.color} 0%, #3b82f6 100%)` }}
                 >
                   <Link to="/contact">申请试用</Link>
                 </Button>
               </div>
               <div>
-                <img
-                  src="/images/product-lab.svg"
-                  alt={`${activeProduct.title}产品界面展示，包含3D虚拟实验和交互式教学功能`}
-                  className="rounded-xl shadow-lg w-full object-cover"
-                  style={{ aspectRatio: "16/10" }}
-                />
+                {activeProducts.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-4">
+                    {activeProducts.slice(0, 4).map((p) => (
+                      <Card key={p.id} className="border-[#e2e8f0] hover:border-[#3b82f6]/30 transition-all duration-300">
+                        <CardContent className="p-4">
+                          {p.thumb ? (
+                            <img src={p.thumb} alt={p.title} className="w-full h-32 object-cover rounded-lg mb-3" />
+                          ) : (
+                            <div className="w-full h-32 bg-[#f1f5f9] rounded-lg mb-3 flex items-center justify-center">
+                              <Monitor className="w-8 h-8 text-[#94a3b8]" />
+                            </div>
+                          )}
+                          <h4 className="font-medium text-sm text-[#0f172a] line-clamp-2">{p.title}</h4>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <img
+                    src="/images/product-lab.svg"
+                    alt={`${activeCat.catname}产品界面展示`}
+                    className="rounded-xl shadow-lg w-full object-cover"
+                    style={{ aspectRatio: "16/10" }}
+                  />
+                )}
               </div>
             </div>
           </FadeIn>

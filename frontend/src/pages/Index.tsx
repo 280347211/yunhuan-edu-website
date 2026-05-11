@@ -80,11 +80,17 @@ export default function Index() {
       const resp = d as { items: Article[] };
       setNews(resp.items || []);
     }).catch(() => {});
-    // Load products (all product subcategories under 3D教育资源库 catid=11)
-    // Products have catid 42-47 (化学/物理/生物/科学/数学/安全教育)
-    api.get("/products").then((d) => {
+    // Load solution products (catid=12 = 3D教育解决方案)
+    api.get("/products?catid=12").then((d) => {
       const prods = d as Product[];
-      setProducts(prods.slice(0, 8));
+      if (prods.length > 0) {
+        setProducts(prods.slice(0, 8));
+      } else {
+        // Fallback: load all products
+        api.get("/products").then((d2) => {
+          setProducts((d2 as Product[]).slice(0, 8));
+        }).catch(() => {});
+      }
     }).catch(() => {});
   }, []);
 
